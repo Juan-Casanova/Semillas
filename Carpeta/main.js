@@ -3,7 +3,11 @@ var canvas =document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
 //PRUEBA////ctx.fillRect(20,20,300,300)
 
+
+
 //Variables Constantes
+
+
 var interval;
 var frames=0;
 var images=
@@ -14,8 +18,15 @@ var images=
         avion:"./imagenes/avioncito.png",
         semilla1:"./imagenes/semilla.png"
     }
+var num_sem=0;
+
+
+
+
 
 //Funciones
+
+
 
 class back
 {
@@ -44,16 +55,19 @@ class back
     }
 }
 
+
+
 class avion
 {
     constructor()
     {
-        this.x=768;
-        this.y=30;
         this.width=100;
         this.height=75;
-        this.der=+10;
-        this.izq=-10;
+        this.x=768-this.width;
+        this.y=70;
+        
+        this.der=+30;
+        this.izq=-30;
         this.dispara=[]
         this.image=new Image();
         this.image.src=images.avion;
@@ -70,17 +84,21 @@ class avion
     }
     avionIzq()
     {
-        console.log("casi")
+        //console.log("casi")
         this.x+=this.izq;
        
     }
 
     draw()
         {
+
             ctx.drawImage(this.image, this.x,this.y,this.width,this.height);
         }
     
 }
+
+
+
 
 class semilla
 {
@@ -90,9 +108,84 @@ class semilla
         this.height=50;
         this.x=as.x+as.width/2-this.width;
         this.y=as.y+this.height;
+        this.der=+20;
+        this.izq=-20
         this.image=new Image();
-        this.vY=+1;
+        this.vY=+2;
         this.image.src=images.semilla1;
+        this.image.onload=function()
+        {
+            this.draw();
+        }.bind(this);
+    }
+    tocando(toco)
+    {
+        return  (this.x < toco.x + toco.width) &&
+                (this.x + this.width > toco.x) &&
+                (this.y < toco.y + toco.height) &&
+                (this.y + this.height > toco.y);
+    }
+    semiDer()
+    {
+        
+        this.x+=this.der;
+    }
+    semiIzq()
+    {
+        //console.log("casi")
+        this.x+=this.izq;
+       
+    }
+
+    draw()
+    {
+        if(this.y>=765)
+        {
+            //console.log("ja")
+            num_sem=0;
+            //console.log(num_sem);
+            
+            avioncito.dispara.pop();
+        }
+        else
+        {             
+            this.y+=this.vY;
+            ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
+            num_sem=+1;
+            //console.log(num_sem);
+            //console.log(this.y);
+        }
+    }
+}
+
+
+
+class suelo
+{
+    constructor()
+    {
+        this.x=0;
+        this.y=765;
+        this.width=canvas.width;
+        this.height=canvas.height;
+    }
+    
+    draw()
+    {
+        ctx.fillRect(this.x,this.y,this.width,this.height)
+    }
+}
+
+class arbolito_1
+{
+    constructor(os)
+    {
+        this.width=75;
+        this.height=100;
+        this.x=os.x+os.width/2-this.width;
+        this.y=os.y+this.height;
+        this.image=new Image();
+        this.image.src=images.arbolito_1;
         this.image.onload=function()
         {
             this.draw();
@@ -101,17 +194,26 @@ class semilla
 
     draw()
     {
-        this.y+=this.vY;
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
     }
 }
+ 
+
+
 //instancias
+
 
 var fondito=new back();
 var avioncito=new avion();
-//var semillita=new semilla(canvas.width/2,canvas.height-60);
+//var semillita=new semilla();
+var suelecito=new suelo();
+
+
+
 
 //Mains
+
+
 function update()
     {
         frames++;
@@ -119,8 +221,10 @@ function update()
         ctx.clearRect(0,0,canvas.width,canvas.height);
         fondito.draw();
         avioncito.draw();
+        
         //semillita.draw();
         drawSemi();
+        suelecito.draw();
     }
 
 function start()
@@ -129,9 +233,15 @@ function start()
         interval = setInterval(update, 1000/60);
        // ctx.arbolito_1;
     }
-//Funciones auxiliares
 
-function generarSemilla()
+
+
+
+    //Funciones auxiliares
+
+
+
+    function generarSemilla()
 {
     var semi=new semilla(avioncito)
     avioncito.dispara.push(semi);
@@ -140,11 +250,38 @@ function generarSemilla()
 function drawSemi()
 {
     avioncito.dispara.forEach(function(b) {
-        b.draw();
-    });
+    b.draw();
+});
+    
 }
 
+function destruir_semilla()
+{
+if(semi.tocando(semilla))
+{
+    console.log(num_sem);
+}
+}
+
+function checarpos(ja)
+{
+    if(ja.y==765)
+    {
+        console.log(num_sem);
+    }
+}
+
+
+
+
+
+
+
 //escuchadores
+
+
+
+
 
 
 
@@ -153,19 +290,48 @@ addEventListener("keydown",function(e)
     //console.log("jajajajaj")
     if(e.keyCode===37)
     {
-        //console.log("izq");
-        avioncito.avionIzq();
-        
+        if(num_sem==0)
+        {
+            //console.log("izq");
+            avioncito.avionIzq();
+        }
+        else
+        {
+            //console.log("pu")
+            //semilla.semi.semiIzq();
+            avioncito.dispara.forEach(function(b) {
+                b.semiIzq();});
+
+        }        
     }
     if(e.keyCode===39)
     {
-        //console.log("sider");
-        avioncito.avionDer();
-       
+        if(num_sem==0)
+        {
+            //console.log("sider");
+            avioncito.avionDer();
+        }
+        else
+        {
+            //avioncito.dispara.semiDer();
+            avioncito.dispara.forEach(function(b) {
+                b.semiDer();});
+        }
     }
     if(e.keyCode===32)
     {
-        generarSemilla();
+        if(num_sem==0)
+        {
+            generarSemilla();
+            //semillita.draw();
+            //var semillita=new semilla(avioncito);
+            
+             
+        }
+        else
+        {
+            return;
+        }
     }
 });
 start();
