@@ -19,7 +19,9 @@ var images=
         semilla1:"./imagenes/semilla.png"
     }
 var num_sem=0;
-
+var arboles=[]
+var posx=0;
+var posy=0;
 
 
 
@@ -104,6 +106,7 @@ class semilla
 {
     constructor(as)
     {
+        
         this.width=35;
         this.height=50;
         this.x=as.x+as.width/2-this.width;
@@ -118,13 +121,7 @@ class semilla
             this.draw();
         }.bind(this);
     }
-    tocando(toco)
-    {
-        return  (this.x < toco.x + toco.width) &&
-                (this.x + this.width > toco.x) &&
-                (this.y < toco.y + toco.height) &&
-                (this.y + this.height > toco.y);
-    }
+    
     semiDer()
     {
         
@@ -144,7 +141,9 @@ class semilla
             //console.log("ja")
             num_sem=0;
             //console.log(num_sem);
-            
+            posx=this.x;
+            posy=this.y;
+            generar_arbolito();
             avioncito.dispara.pop();
         }
         else
@@ -178,12 +177,14 @@ class suelo
 
 class arbolito_1
 {
-    constructor(os)
+    constructor()
     {
-        this.width=75;
-        this.height=100;
-        this.x=os.x+os.width/2-this.width;
-        this.y=os.y+this.height;
+        this.width=150;
+        this.height=200;
+        //this.x=os.x+os.width/2-this.width;
+        //this.y=os.y+this.height;
+        this.x=posx-100;
+        this.y=posy-150;
         this.image=new Image();
         this.image.src=images.arbolito_1;
         this.image.onload=function()
@@ -225,6 +226,7 @@ function update()
         //semillita.draw();
         drawSemi();
         suelecito.draw();
+        drawArbol();
     }
 
 function start()
@@ -255,25 +257,18 @@ function drawSemi()
     
 }
 
-function destruir_semilla()
+function generar_arbolito()
 {
-if(semi.tocando(semilla))
-{
-    console.log(num_sem);
-}
+    var arbolito=new arbolito_1();
+    arboles.push(arbolito);
 }
 
-function checarpos(ja)
+function drawArbol()
 {
-    if(ja.y==765)
-    {
-        console.log(num_sem);
-    }
+    arboles.forEach(function(b){
+        b.draw();
+    })
 }
-
-
-
-
 
 
 
