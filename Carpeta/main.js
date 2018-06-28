@@ -7,9 +7,11 @@ var ctx=canvas.getContext("2d");
 
 //Variables Constantes
 
-
+var instru=document.getElementById("titulo");
 var interval;
+var interval2;
 var frames=0;
+var frames2=0;
 var images=
     {
         fondo:"./imagenes/sin_luz.png",
@@ -19,18 +21,27 @@ var images=
         semilla1:"./imagenes/semilla.png"
     }
 var num_sem=0;
+var num_sem2=0;
 var arboles=[]
+var arboles2=[]
 var posx=0;
+var posx2=0
 var posy=0;
+var posy2=0;
 var niv_conta=100;
+var niv_conta2=100;
 var tiempo=1;
+var tiempo2=1;
+//var comienzo=0;
 //var tiempo_real=0;
+var jugador1=true;
 
 
 
 
 //Funciones
 
+//ctx.fillText("PRIMER JUGADOR OPRIME A ENTER PARA COMENZAR",300,400)
 
 
 class back
@@ -143,10 +154,19 @@ class semilla
         {
             //console.log("ja")
             num_sem=0;
+            num_sem2=0;
             //console.log(num_sem);
             posx=this.x;
             posy=this.y;
-            generar_arbolito();
+            if(jugador1==true)
+            {
+                generar_arbolito();
+            }
+            else
+            {
+                generar_arbolito2();
+            }
+            
             avioncito.dispara.pop();
         }
         else
@@ -154,6 +174,7 @@ class semilla
             this.y+=this.vY;
             ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
             num_sem=+1;
+            num_sem2=+1;
             //console.log(num_sem);
             //console.log(this.y);
         }
@@ -218,6 +239,22 @@ class Texto
     }
 }
 
+class Texto2
+{
+    constructor()
+    {
+        this.x=900;
+        this.y=50;
+    }
+
+    draw()
+    {
+        
+        ctx.font="50px Arial";
+        ctx.fillText("Contaminacion al "+niv_conta2+" %",this.x,this.y)
+    }
+}
+
 class Texto_tiempo
 {
     constructor()
@@ -234,7 +271,28 @@ class Texto_tiempo
         //tiempo_real=tiempo_real-tiempo;
        // console.log(tiempo_real)
         ctx.font="50px Arial";
-        ctx.fillText((90-tiempo)+" s",this.x,this.y)
+        ctx.fillText((7-tiempo)+" s",this.x,this.y)
+    }
+
+}
+
+class Texto_tiempo2
+{
+    constructor()
+    {
+        this.x=50;
+        this.y=50;
+    }
+    
+    
+    draw()
+    {
+        tiempo2=Math.floor(frames2/60);
+        //console.log(tiempo)
+        //tiempo_real=tiempo_real-tiempo;
+       // console.log(tiempo_real)
+        ctx.font="50px Arial";
+        ctx.fillText((7-tiempo2)+" s",this.x,this.y)
     }
 
 }
@@ -248,8 +306,9 @@ var avioncito=new avion();
 //var semillita=new semilla();
 var suelecito=new suelo();
 var textito=new Texto();
+var textito2=new Texto2();
 var textito_tiempo=new Texto_tiempo();
-
+var textito2_tiempo=new Texto_tiempo2();
 
 
 
@@ -281,6 +340,26 @@ function start()
        // ctx.arbolito_1;
     }
 
+    function update2()
+    {
+        frames2++;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        fondito.draw();
+        avioncito.draw();
+        textito2_tiempo.draw();
+        textito2.draw();
+        suelecito.draw();
+        drawSemi2();
+        drawArbol2();
+        
+    }
+
+function start2()
+    {
+        if(interval2) return;
+        interval2 = setInterval(update2, 1000/60);
+    }   
+
 
 
 
@@ -303,6 +382,21 @@ function drawSemi()
     
 }
 
+function generarSemilla2()
+{
+    var semi2=new semilla(avioncito)
+    avioncito.dispara.push(semi2);
+    
+}
+
+function drawSemi2()
+{
+    avioncito.dispara.forEach(function(b) {
+    b.draw();
+});
+    
+}
+
 function generar_arbolito()
 {
     var arbolito=new arbolito_1();
@@ -317,11 +411,35 @@ function drawArbol()
     })
 }
 
+function generar_arbolito2()
+{
+    var arbolito2=new arbolito_1();
+    arboles2.push(arbolito2);
+    niv_conta2=niv_conta2-10;
+}
+
+function drawArbol2()
+{
+    arboles2.forEach(function(b){
+        b.draw();
+    })
+}
+
 function checarTiempo()
 {
-    if(tiempo==90)
+    if(tiempo==7)
     {
-        clearInterval(interval);
+        document.getElementById("titulo").innerHTML="presiona";
+        document.getElementById('titulo').addEventListener('click', function(){
+            //this.innerHTML = "presina"
+            instru.id = "yaNo";
+            console.log(instru.id)
+            jugador1=false;
+            start2();
+            });
+       
+        //start2();
+        clearInterval(interval);        
     }
   // if((tiempo/90)==)
   //console.log(tiempo);
@@ -344,48 +462,115 @@ addEventListener("keydown",function(e)
     //console.log("jajajajaj")
     if(e.keyCode===37)
     {
-        if(num_sem==0)
+        if(jugador1==true)
         {
-            //console.log("izq");
-            avioncito.avionIzq();
+            if(num_sem==0)
+            {
+                //console.log("izq");
+                avioncito.avionIzq();
+            }
+            else
+            {
+                //console.log("pu")
+                //semilla.semi.semiIzq();
+                avioncito.dispara.forEach(function(b) {
+                    b.semiIzq();});
+
+            }    
         }
         else
         {
-            //console.log("pu")
-            //semilla.semi.semiIzq();
-            avioncito.dispara.forEach(function(b) {
-                b.semiIzq();});
 
-        }        
+            if(num_sem2==0)
+            {
+                //console.log("izq");
+                avioncito.avionIzq();
+            }
+            else
+            {
+                //console.log("pu")
+                //semilla.semi.semiIzq();
+                avioncito.dispara.forEach(function(b) {
+                    b.semiIzq();});
+
+            }  
+        }    
     }
     if(e.keyCode===39)
     {
-        if(num_sem==0)
+        if(jugador1==true)
         {
-            //console.log("sider");
-            avioncito.avionDer();
+            if(num_sem==0)
+            {
+                //console.log("sider");
+                avioncito.avionDer();
+            }
+            else
+            {
+                //avioncito.dispara.semiDer();
+                avioncito.dispara.forEach(function(b) {
+                    b.semiDer();});
+            }
         }
         else
         {
-            //avioncito.dispara.semiDer();
-            avioncito.dispara.forEach(function(b) {
-                b.semiDer();});
+            if(num_sem2==0)
+            {
+                //console.log("sider");
+                avioncito.avionDer();
+            }
+            else
+            {
+                //avioncito.dispara.semiDer();
+                avioncito.dispara.forEach(function(b) {
+                    b.semiDer();});
+            }
         }
     }
     if(e.keyCode===32)
     {
-        if(num_sem==0)
+        if(jugador1==true)
         {
-            generarSemilla();
-            //semillita.draw();
-            //var semillita=new semilla(avioncito);
-            
-             
+            if(num_sem==0)
+            {
+                generarSemilla();
+                //semillita.draw();
+                //var semillita=new semilla(avioncito);
+                
+                
+            }
+            else
+            {
+                return;
+            }
         }
         else
         {
-            return;
+            if(num_sem2==0)
+            {
+                generarSemilla2();
+                //semillita.draw();
+                //var semillita=new semilla(avioncito);
+                
+                
+            }
+            else
+            {
+                return;
+            }
         }
     }
+
+    //if(e.keyCode===13)
+    //{
+       
+    //}
 });
-start();
+
+document.getElementById('titulo').addEventListener('click', function(){
+    this.innerHTML = "JUGANDO PLAYER 1"
+    //instru.id = "yaNo";
+    //console.log(instru.id)
+    start();
+    });
+//start();
