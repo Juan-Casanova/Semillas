@@ -351,13 +351,14 @@ function start()
         suelecito.draw();
         drawSemi2();
         drawArbol2();
-        
+        checarTiempo2();
     }
 
 function start2()
     {
         if(interval2) return;
         interval2 = setInterval(update2, 1000/60);
+       
     }   
 
 
@@ -432,6 +433,7 @@ function checarTiempo()
         document.getElementById("titulo").innerHTML="presiona";
         document.getElementById('titulo').addEventListener('click', function(){
             //this.innerHTML = "presina"
+            document.getElementById("titulo").innerHTML="ESTA JUGANDO EL JUGADOR 2";
             instru.id = "yaNo";
             console.log(instru.id)
             jugador1=false;
@@ -445,6 +447,31 @@ function checarTiempo()
   //console.log(tiempo);
 }
 
+
+function checarTiempo2()
+{
+    if(tiempo2==7)
+    {
+        checarGanador();
+        clearInterval(interval2);
+    }
+}
+
+function checarGanador()
+{
+    if(niv_conta<niv_conta2)
+    {
+        document.getElementById("yaNo").innerHTML="GANO EL JUGADOR UNO";
+    }
+    if(niv_conta2<niv_conta)
+    {
+        document.getElementById("yaNo").innerHTML="GANO EL JUGADOR DOS";
+    }
+    if(niv_conta=niv_conta2)
+    {
+        document.getElementById("yaNo").innerHTML="HAN QUEDADO EMPATE";
+    }
+}
 
 
 
@@ -568,7 +595,7 @@ addEventListener("keydown",function(e)
 });
 
 document.getElementById('titulo').addEventListener('click', function(){
-    this.innerHTML = "JUGANDO PLAYER 1"
+    this.innerHTML = "ESTA JUGANDO EL JUGADOR 1"
     //instru.id = "yaNo";
     //console.log(instru.id)
     start();
