@@ -20,8 +20,8 @@ var images=
         avion:"./imagenes/avioncito.png",
         semilla1:"./imagenes/semilla.png"
     }
-var num_sem=0;
-var num_sem2=0;
+var num_sem=-1;
+var num_sem2=-1;
 var arboles=[]
 var arboles2=[]
 var posx=0;
@@ -223,6 +223,8 @@ class arbolito_1
     }
 }
 
+
+
 class Texto
 {
     constructor()
@@ -331,10 +333,13 @@ function update()
         //console.log(tiempo);
         textito_tiempo.draw();
         checarTiempo();
+        console.log(niv_conta)
     }
 
 function start()
     {
+        num_sem=0
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         if(interval) return;
         interval = setInterval(update, 1000/60);
        // ctx.arbolito_1;
@@ -352,12 +357,16 @@ function start()
         drawSemi2();
         drawArbol2();
         checarTiempo2();
+        console.log(niv_conta2)
     }
 
 function start2()
     {
+        num_sem2=0;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         if(interval2) return;
         interval2 = setInterval(update2, 1000/60);
+        
        
     }   
 
@@ -461,15 +470,21 @@ function checarGanador()
 {
     if(niv_conta<niv_conta2)
     {
+        
         document.getElementById("yaNo").innerHTML="GANO EL JUGADOR UNO";
+        //instru.id = "seTermino";
     }
     if(niv_conta2<niv_conta)
     {
+        
         document.getElementById("yaNo").innerHTML="GANO EL JUGADOR DOS";
+        //instru.id = "seTermino";
     }
-    if(niv_conta=niv_conta2)
+    if(niv_conta==niv_conta2)
     {
+        
         document.getElementById("yaNo").innerHTML="HAN QUEDADO EMPATE";
+        //instru.id = "seTermino";
     }
 }
 
@@ -525,6 +540,16 @@ addEventListener("keydown",function(e)
     }
     if(e.keyCode===39)
     {
+        /*
+        if(num_sem==-1)
+        {
+            num_sem=0;
+        }
+        if(num_sem2==-1)
+        {
+            num_sem2=0
+        }
+        */
         if(jugador1==true)
         {
             if(num_sem==0)
