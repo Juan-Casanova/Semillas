@@ -22,6 +22,9 @@ var num_sem=0;
 var arboles=[]
 var posx=0;
 var posy=0;
+var niv_conta=100;
+var tiempo=1;
+//var tiempo_real=0;
 
 
 
@@ -180,10 +183,10 @@ class arbolito_1
     constructor()
     {
         this.width=150;
-        this.height=200;
+        this.height=175;
         //this.x=os.x+os.width/2-this.width;
         //this.y=os.y+this.height;
-        this.x=posx-100;
+        this.x=posx-75;
         this.y=posy-150;
         this.image=new Image();
         this.image.src=images.arbolito_1;
@@ -198,7 +201,43 @@ class arbolito_1
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
     }
 }
- 
+
+class Texto
+{
+    constructor()
+    {
+        this.x=900;
+        this.y=50;
+    }
+
+    draw()
+    {
+        
+        ctx.font="50px Arial";
+        ctx.fillText("Contaminacion al "+niv_conta+" %",this.x,this.y)
+    }
+}
+
+class Texto_tiempo
+{
+    constructor()
+    {
+        this.x=50;
+        this.y=50;
+    }
+    
+    
+    draw()
+    {
+        tiempo=Math.floor(frames/60);
+        //console.log(tiempo)
+        //tiempo_real=tiempo_real-tiempo;
+       // console.log(tiempo_real)
+        ctx.font="50px Arial";
+        ctx.fillText((90-tiempo)+" s",this.x,this.y)
+    }
+
+}
 
 
 //instancias
@@ -208,6 +247,8 @@ var fondito=new back();
 var avioncito=new avion();
 //var semillita=new semilla();
 var suelecito=new suelo();
+var textito=new Texto();
+var textito_tiempo=new Texto_tiempo();
 
 
 
@@ -222,11 +263,15 @@ function update()
         ctx.clearRect(0,0,canvas.width,canvas.height);
         fondito.draw();
         avioncito.draw();
-        
+       // niv_conta++;
         //semillita.draw();
         drawSemi();
         suelecito.draw();
         drawArbol();
+        textito.draw();
+        //console.log(tiempo);
+        textito_tiempo.draw();
+        checarTiempo();
     }
 
 function start()
@@ -247,6 +292,7 @@ function start()
 {
     var semi=new semilla(avioncito)
     avioncito.dispara.push(semi);
+    
 }
 
 function drawSemi()
@@ -261,6 +307,7 @@ function generar_arbolito()
 {
     var arbolito=new arbolito_1();
     arboles.push(arbolito);
+    niv_conta=niv_conta-10;
 }
 
 function drawArbol()
@@ -269,6 +316,18 @@ function drawArbol()
         b.draw();
     })
 }
+
+function checarTiempo()
+{
+    if(tiempo==90)
+    {
+        clearInterval(interval);
+    }
+  // if((tiempo/90)==)
+  //console.log(tiempo);
+}
+
+
 
 
 
